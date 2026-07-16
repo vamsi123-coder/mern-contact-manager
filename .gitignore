@@ -24,9 +24,11 @@ backend/dist/
 client/.vite/
 client/.cache/
 
-# Env files
+# Env files – ignore real secrets, allow example templates
 .env
-.env.*
+.env.local
+.env.*.local
+!.env.example
 
 # Editor directories and files
 .vscode/*

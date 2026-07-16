@@ -27,7 +27,19 @@ cd backend
 npm install
 ```
 
-Update your MongoDB connection in `backend/config/db.js` (if needed).
+Update your MongoDB connection in `backend/config/db.js` (or set `MONGO_URI`) if needed.
+
+If you use MongoDB Compass, connect to:
+
+```text
+mongodb://127.0.0.1:27017/
+```
+
+If Compass still shows a connection error, make sure MongoDB is actually running locally. On Windows, start the service or run:
+
+```bash
+mongod --dbpath C:\data\db
+```
 
 Run the backend:
 

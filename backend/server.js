@@ -1,39 +1,39 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
-const Contact = require('./contact');
+const authRoutes = require('./routes/authRoutes');
+const contactRoutes = require('./routes/contactRoutes');
 
 const app = express();
 
-connectDB();
+// CORS: allow Vercel frontend in prod, localhost in dev
+const allowedOrigins = process.env.CORS_ORIGIN
+    ? [process.env.CORS_ORIGIN]
+    : ['http://localhost:5173', 'http://localhost:5174'];
 
-app.use(cors());
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true,
+}));
 app.use(express.json());
 
-app.post("/api/contacts", async (req, res) => {
-    const contact = await Contact.create(req.body);
-    res.send(contact);
-});
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/contacts', contactRoutes);
 
-app.get("/api/contacts", async (req, res) => {
-    const contacts = await Contact.find(req.body);
-    res.send(contacts);
-});
+// Start server after DB connects
+const startServer = async () => {
+    try {
+        await connectDB();
+        const PORT = process.env.PORT || 5000;
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    } catch (err) {
+        console.error('Failed to start server:', err);
+        process.exit(1);
+    }
+};
 
-app.put("/api/contacts/:id", async (req, res) => {
-    const contact = await Contact.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true }
-    );
-    res.send(contact);
-});
-
-app.delete("/api/contacts/:id", async (req, res) => {
-    await Contact.findByIdAndDelete(req.params.id);
-    res.send({ message: "Deleted" });
-});
-
-app.listen(5000, () => {
-    console.log("Server is running on port 5000");
-});
+startServer();

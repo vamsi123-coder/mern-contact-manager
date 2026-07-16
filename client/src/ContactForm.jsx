@@ -5,12 +5,16 @@ const ContactForm = ({onSubmit, existing}) => {
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     useEffect(() => {
-        if(existing){
+        if (existing) {
             setName(existing.name);
             setEmail(existing.email);
             setPhone(existing.phone);
+        } else {
+            setName('');
+            setEmail('');
+            setPhone('');
         }
-    },[existing]);
+    }, [existing]);
     const handleSuubmit = (e) => {
         e.preventDefault();
         onSubmit({name,email,phone});
